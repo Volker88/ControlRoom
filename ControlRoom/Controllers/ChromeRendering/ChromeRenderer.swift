@@ -56,9 +56,10 @@ import SwiftUI
 
 // Note: all the Decodable types for rendering are stored
 // in ChromeRendererTypes.swift.
+// swiftlint:disable file_length
 
 /// Renders a screenshot to an image using a specific device name.
-class ChromeRenderer {
+class ChromeRenderer { // swiftlint:disable:this type_body_length
     /// The screenshot we want to place inside our device chrome.
     let screenshot: NSImage
 
@@ -133,7 +134,7 @@ class ChromeRenderer {
     /// This does all the actual work of loading and rendering the various image components to produce
     /// a final image of the screenshot in simulator chrome.
     @MainActor
-    func makeImage() -> NSImage? { //swiftlint:disable:this function_body_length
+    func makeImage() -> NSImage? { // swiftlint:disable:this function_body_length
         let renderer = ImageRenderer(
             content:
                 Canvas { [self] context, size in

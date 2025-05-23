@@ -113,7 +113,7 @@ class LocalSearchController: NSObject, ObservableObject {
 }
 
 /// Adds `MKLocalSearchCompleterDelegate` conformance so the controller can use the delegate's callback methods
-extension LocalSearchController: MKLocalSearchCompleterDelegate {
+extension LocalSearchController: @preconcurrency MKLocalSearchCompleterDelegate {
     /// Called if `MKLocalSearchCompleter` return valid results from a query string
     func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
         guard let callback else { return }

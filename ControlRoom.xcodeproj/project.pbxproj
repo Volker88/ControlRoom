@@ -550,7 +550,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1140;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 1640;
 				ORGANIZATIONNAME = "Paul Hudson";
 				TargetAttributes = {
 					511BA57823F3FFEA00E3E660 = {
@@ -829,6 +829,8 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -886,6 +888,8 @@
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -919,7 +923,6 @@
 				SUPPORTED_PLATFORMS = "macosx xros xrsimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 7;
 			};
 			name = Debug;
@@ -954,7 +957,6 @@
 				PRODUCT_NAME = "Control Room";
 				SUPPORTED_PLATFORMS = "macosx xros xrsimulator";
 				SUPPORTS_MACCATALYST = NO;
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 7;
 			};
 			name = Release;
@@ -974,10 +976,9 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hackingwithswift.ControlRoomTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Control Room.app/Contents/MacOS/Control Room";
 			};
 			name = Debug;
@@ -997,10 +998,9 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hackingwithswift.ControlRoomTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Control Room.app/Contents/MacOS/Control Room";
 			};
 			name = Release;

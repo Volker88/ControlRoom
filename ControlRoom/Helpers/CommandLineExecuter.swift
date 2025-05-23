@@ -119,8 +119,7 @@ extension CommandLineCommandExecuter {
     }
 
     static func executePropertyList<T: Decodable>(_ command: Command)
-        -> AnyPublisher<T, CommandLineError>
-    {
+        -> AnyPublisher<T, CommandLineError> {
         executeAndDecode(command, decoder: PropertyListDecoder())
     }
 

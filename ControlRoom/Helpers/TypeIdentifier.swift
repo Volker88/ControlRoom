@@ -16,8 +16,6 @@ struct TypeIdentifier: Hashable {
     static let pad = TypeIdentifier("com.apple.ipad")
     static let watch = TypeIdentifier("com.apple.watch")
     static let vision = TypeIdentifier("com.apple.vision-pro")
-
-    // swiftlint:disable:next identifier_name
     static let tv = TypeIdentifier("com.apple.apple-tv")
 
     /// Default type identifiers to be used for unknown simulators

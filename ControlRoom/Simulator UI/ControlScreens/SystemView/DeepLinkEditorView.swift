@@ -35,6 +35,7 @@ struct DeepLinkEditorView: View {
             Text("Saved Deep Links")
                 .font(.title)
 
+            // swiftlint:disable:next line_length
             Text("Create named deep links or other URLs to make them easier to open repeatedly inside Control Room. **Tip:** Adjusting the sort order adjusts the order here, in the System tab, and in the menu bar list.")
 
             if deepLinks.links.isEmpty {

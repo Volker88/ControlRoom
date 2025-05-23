@@ -19,7 +19,21 @@ struct XcodeColorSet: Codable {
     /// A helper initializer to bypass the complexity of the colorset
     /// file structure, because only care about RGB values.
     init(red: String, green: String, blue: String) {
-        self = XcodeColorSet(colors: [XcodeColors(color: XcodeColor(components: XcodeColorComponents(alpha: "1.000", blue: "0x\(blue)", green: "0x\(green)", red: "0x\(red)")))], info: XcodeColorInfo())
+        self = XcodeColorSet(
+            colors: [
+                XcodeColors(
+                    color: XcodeColor(
+                        components: XcodeColorComponents(
+                            alpha: "1.000",
+                            blue: "0x\(blue)",
+                            green: "0x\(green)",
+                            red: "0x\(red)"
+                        )
+                    )
+                )
+            ],
+            info: XcodeColorInfo()
+        )
     }
 
     /// The default initializer, where both values must be provided.

@@ -14,8 +14,8 @@ import CoreLocation
 struct LocationView: View {
     @ObservedObject var controller: SimulatorsController
     let simulator: Simulator
-    static let DEFAULT_LAT = 37.323056
-    static let DEFAULT_LNG = -122.031944
+    static let DEFAULT_LAT = 37.323056 // swiftlint:disable:this identifier_name
+    static let DEFAULT_LNG = -122.031944 // swiftlint:disable:this identifier_name
 
     /// Saved locations controller.
     @StateObject private var locationsController = LocationsController()

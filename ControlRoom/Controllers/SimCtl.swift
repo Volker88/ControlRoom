@@ -76,7 +76,7 @@ enum SimCtl: CommandLineCommandExecuter {
     }
 
     static func overrideStatusBarBattery(_ simulator: String, level: Int, state: StatusBar.BatteryState) async {
-       _ = await execute(.statusBar(deviceId: simulator, operation: .override([.batteryLevel(level), .batteryState(state)])))
+        _ = await execute(.statusBar(deviceId: simulator, operation: .override([.batteryLevel(level), .batteryState(state)])))
     }
 
     static func overrideStatusBarWiFi(
@@ -205,59 +205,54 @@ enum SimCtl: CommandLineCommandExecuter {
         await launch(simulator, appID: appID)
     }
 
-    static func sendPushNotification(_ simulator: String, appID: String, jsonPayload: String) {
+    static func sendPushNotification(_ simulator: String, appID: String, jsonPayload: String) async {
         let tempDirectory = URL(fileURLWithPath: NSTemporaryDirectory())
         let fileName = "\(UUID().uuidString).json"
         let tempFile = tempDirectory.appendingPathComponent(fileName)
         do {
             try jsonPayload.write(to: tempFile, atomically: true, encoding: .utf8)
-            execute(.push(deviceId: simulator, appBundleId: appID, json: .path(tempFile.path))) { _ in
-                try? FileManager.default.removeItem(at: tempFile)
-            }
+
+            _ = await execute(.push(deviceId: simulator, appBundleId: appID, json: .path(tempFile.path)))
+            try? FileManager.default.removeItem(at: tempFile)
         } catch {
             print("Cannot write json payload to \(tempFile.path)")
         }
     }
 
-    static func openURL(_ simulator: String, URL: String) {
-        execute(.openURL(deviceId: simulator, url: URL))
+    static func openURL(_ simulator: String, URL: String) async {
+        _ = await execute(.openURL(deviceId: simulator, url: URL))
     }
 
-    static func addRootCertificate(_ simulator: String, filePath: String) {
-        execute(.keychain(deviceId: simulator, action: .addRootCert(path: filePath)))
+    static func addRootCertificate(_ simulator: String, filePath: String) async {
+        _ = await execute(.keychain(deviceId: simulator, action: .addRootCert(path: filePath)))
     }
 
-    static func grantPermission(_ simulator: String, appID: String, permission: Privacy.Permission) {
-        execute(.privacy(deviceId: simulator, action: .grant, service: permission, appBundleId: appID))
+    static func grantPermission(_ simulator: String, appID: String, permission: Privacy.Permission) async {
+        _ = await execute(.privacy(deviceId: simulator, action: .grant, service: permission, appBundleId: appID))
     }
 
-    static func revokePermission(_ simulator: String, appID: String, permission: Privacy.Permission) {
-        execute(.privacy(deviceId: simulator, action: .revoke, service: permission, appBundleId: appID))
+    static func revokePermission(_ simulator: String, appID: String, permission: Privacy.Permission) async {
+        _ = await execute(.privacy(deviceId: simulator, action: .revoke, service: permission, appBundleId: appID))
     }
 
-    static func resetPermission(_ simulator: String, appID: String, permission: Privacy.Permission) {
-        execute(.privacy(deviceId: simulator, action: .reset, service: permission, appBundleId: appID))
+    static func resetPermission(_ simulator: String, appID: String, permission: Privacy.Permission) async {
+        _ = await execute(.privacy(deviceId: simulator, action: .reset, service: permission, appBundleId: appID))
     }
 
-    static func getAppContainer(_ simulator: String, appID: String, completion: @escaping (URL?) -> Void) {
-        execute(.getAppContainer(deviceId: simulator, appBundleID: appID)) { result in
-            let url: URL?
+    static func getAppContainer(_ simulator: String, appID: String) async -> URL? {
+        let result = await execute(.getAppContainer(deviceId: simulator, appBundleID: appID))
 
-            switch result {
-            case .success(let data):
-                if let path = String(data: data, encoding: .utf8) {
-                    let trimmed = path.trimmingCharacters(in: .whitespacesAndNewlines)
-                    url = URL(fileURLWithPath: trimmed)
-                } else {
-                    url = nil
-                }
-            case .failure:
-                url = nil
+        switch result {
+        case .success(let data):
+            if let path = String(data: data, encoding: .utf8) {
+                let trimmed = path.trimmingCharacters(in: .whitespacesAndNewlines)
+
+                return URL(fileURLWithPath: trimmed)
+            } else {
+                return nil
             }
-
-            DispatchQueue.main.async {
-                completion(url)
-            }
+        case .failure:
+            return nil
         }
     }
 }

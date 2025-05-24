@@ -224,7 +224,9 @@ struct AppView: View {
 
     /// Sends a JSON string to the device as push notification,
     func sendPushNotification() {
-        SimCtl.sendPushNotification(simulator.udid, appID: lastBundleID, jsonPayload: pushPayload)
+        Task {
+            await SimCtl.sendPushNotification(simulator.udid, appID: lastBundleID, jsonPayload: pushPayload)
+        }
     }
 
     /// Removes the identified app from the device.
@@ -245,17 +247,23 @@ struct AppView: View {
 
     /// Grants some type of permission to the app.
     func grantPrivacy() {
-        SimCtl.grantPermission(simulator.udid, appID: selectedApplication.bundleIdentifier, permission: resetPermission)
+        Task {
+            await SimCtl.grantPermission(simulator.udid, appID: selectedApplication.bundleIdentifier, permission: resetPermission)
+        }
     }
 
     /// Revokes some type of permission from the app.
     func revokePrivacy() {
-        SimCtl.revokePermission(simulator.udid, appID: selectedApplication.bundleIdentifier, permission: resetPermission)
+        Task {
+            await SimCtl.revokePermission(simulator.udid, appID: selectedApplication.bundleIdentifier, permission: resetPermission)
+        }
     }
 
     /// Resets some type of permission to the app, so it will be asked for again.
     func resetPrivacy() {
-        SimCtl.resetPermission(simulator.udid, appID: selectedApplication.bundleIdentifier, permission: resetPermission)
+        Task {
+            await SimCtl.resetPermission(simulator.udid, appID: selectedApplication.bundleIdentifier, permission: resetPermission)
+        }
     }
 }
 

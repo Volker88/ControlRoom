@@ -96,7 +96,9 @@ struct ControlRoomApp: App {
     }
 
     func resendLastPushNotification() {
-        SimCtl.sendPushNotification(lastSimulatorUDID, appID: lastBundleID, jsonPayload: pushPayload)
+        Task {
+            await SimCtl.sendPushNotification(lastSimulatorUDID, appID: lastBundleID, jsonPayload: pushPayload)
+        }
     }
 
     func restartLastSelectedApp() {
@@ -106,10 +108,14 @@ struct ControlRoomApp: App {
     }
 
     func reopenLastURL() {
-        SimCtl.openURL(lastSimulatorUDID, URL: lastOpenURL)
+        Task {
+            await SimCtl.openURL(lastSimulatorUDID, URL: lastOpenURL)
+        }
     }
 
     func open(_ link: DeepLink) {
-        SimCtl.openURL(lastSimulatorUDID, URL: link.url.absoluteString)
+        Task {
+            await SimCtl.openURL(lastSimulatorUDID, URL: link.url.absoluteString)
+        }
     }
 }

@@ -152,7 +152,7 @@ struct SystemView: View {
             await SimCtl.triggeriCloudSync(simulator.udid)
         }
     }
-    
+
     /// Update logging.
     func updateLogging() {
         Task {
@@ -186,11 +186,15 @@ struct SystemView: View {
 
     /// Opens a URL in the appropriate device app.
     func openURL() {
-        SimCtl.openURL(simulator.udid, URL: lastOpenURL)
+        Task {
+            await SimCtl.openURL(simulator.udid, URL: lastOpenURL)
+        }
     }
 
     func addRootCertificate() {
-        SimCtl.addRootCertificate(simulator.udid, filePath: lastCertificateFilePath)
+        Task {
+            await SimCtl.addRootCertificate(simulator.udid, filePath: lastCertificateFilePath)
+        }
     }
 
     /// Erases the current device.
@@ -237,7 +241,9 @@ struct SystemView: View {
 	}
 
     func open(_ link: DeepLink) {
-        SimCtl.openURL(simulator.udid, URL: link.url.absoluteString)
+        Task {
+            await SimCtl.openURL(simulator.udid, URL: link.url.absoluteString)
+        }
     }
 }
 

@@ -120,7 +120,9 @@ struct OverridesView: View {
 
     /// Moves between light and dark mode.
     func updateAppearance() {
-        SimCtl.setAppearance(simulator.udid, appearance: appearance)
+        Task {
+            await SimCtl.setAppearance(simulator.udid, appearance: appearance)
+        }
     }
 
     func updateLanguage() async {

@@ -75,8 +75,8 @@ enum SimCtl: CommandLineCommandExecuter {
         _ = await execute(.rename(deviceId: simulator, name: name))
     }
 
-    static func overrideStatusBarBattery(_ simulator: String, level: Int, state: StatusBar.BatteryState) {
-        execute(.statusBar(deviceId: simulator, operation: .override([.batteryLevel(level), .batteryState(state)])))
+    static func overrideStatusBarBattery(_ simulator: String, level: Int, state: StatusBar.BatteryState) async {
+       _ = await execute(.statusBar(deviceId: simulator, operation: .override([.batteryLevel(level), .batteryState(state)])))
     }
 
     static func overrideStatusBarWiFi(
@@ -84,8 +84,8 @@ enum SimCtl: CommandLineCommandExecuter {
         network: StatusBar.DataNetwork,
         wifiMode: StatusBar.WifiMode,
         wifiBars: StatusBar.WifiBars
-    ) {
-        execute(.statusBar(deviceId: simulator, operation: .override([
+    ) async {
+        _ = await execute(.statusBar(deviceId: simulator, operation: .override([
             .dataNetwork(network),
             .wifiMode(wifiMode),
             .wifiBars(wifiBars)
@@ -97,36 +97,40 @@ enum SimCtl: CommandLineCommandExecuter {
         cellMode: StatusBar.CellularMode,
         cellBars: StatusBar.CellularBars,
         carrier: String
-    ) {
-        execute(.statusBar(deviceId: simulator, operation: .override([
+    ) async {
+        _ = await execute(.statusBar(deviceId: simulator, operation: .override([
             .cellularMode(cellMode),
             .cellularBars(cellBars),
             .operatorName(carrier)
         ])))
     }
 
-    static func clearStatusBarOverrides(_ simulator: String) {
-        execute(.statusBar(deviceId: simulator, operation: .clear))
+    static func clearStatusBarOverrides(_ simulator: String) async {
+        _ = await execute(.statusBar(deviceId: simulator, operation: .clear))
     }
 
-    static func overrideStatusBarTime(_ simulator: String, time: Date) {
+    static func overrideStatusBarTime(_ simulator: String, time: Date) async {
         // Use only time for now since ISO8601 parsing is broken since Xcode 15.3
         // https://stackoverflow.com/a/59071895
         // let timeString = ISO8601DateFormatter().string(from: time)
         let timeOnlyFormatter = DateFormatter()
         timeOnlyFormatter.dateFormat = "hh:mm"
         let timeString = timeOnlyFormatter.string(from: time)
-        execute(.statusBar(deviceId: simulator, operation: .override([.time(timeString)])))
+        
+        _ = await execute(.statusBar(deviceId: simulator, operation: .override([.time(timeString)])))
     }
-    static func setAppearance(_ simulator: String, appearance: UI.Appearance) {
-        execute(.ui(deviceId: simulator, option: .appearance(appearance)))
+    
+    static func setAppearance(_ simulator: String, appearance: UI.Appearance) async {
+        _ = await execute(.ui(deviceId: simulator, option: .appearance(appearance)))
     }
+    
     static func setLogging(_ simulator: Simulator, enableLogging: Bool) {
         UserDefaults.standard.set(enableLogging, forKey: "\(simulator.udid).logging")
         execute(.setLogging(deviceTypeId: simulator.udid, enableLogging: enableLogging))
         execute(.shutdown(.devices([simulator.udid])))
         execute(.boot(simulator: simulator))
     }
+    
     static func getLogs(_ simulator: String) {
         let source = """
                             tell application "Terminal"

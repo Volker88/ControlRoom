@@ -56,6 +56,7 @@ extension CommandLineCommand {
 
 extension CommandLineCommandExecuter {
 
+    @available(*, deprecated, message: "Use the async version of execute instead")
     private static func execute(
         _ command: Command,
         completion: @escaping (Result<Data, CommandLineError>) -> Void
@@ -72,6 +73,21 @@ extension CommandLineCommandExecuter {
             } else {
                 completion(.failure(.missingCommand))
             }
+        }
+    }
+
+    private static func executeCommand(_ command: Command) async -> Result<Data, CommandLineError> {
+        let commandToExecute: String = command.command ?? launchPath
+
+        do {
+            let data = try await Process.execute(
+                commandToExecute,
+                arguments: command.arguments,
+                environmentOverrides: command.environmentOverrides
+            )
+            return .success(data)
+        } catch {
+            return .failure(.missingCommand)
         }
     }
 
@@ -105,11 +121,16 @@ extension CommandLineCommandExecuter {
         return publisher
     }
 
+    @available(*, deprecated, message: "Use the async version of execute instead")
     static func execute(
         _ command: Command,
         completion: ((Result<Data, CommandLineError>) -> Void)? = nil
     ) {
         execute(command, completion: completion ?? { _ in })
+    }
+
+    static func execute(_ command: Command) async -> Result<Data, CommandLineError> {
+        await executeCommand(command)
     }
 
     static func executeJSON<T: Decodable>(_ command: Command) -> AnyPublisher<

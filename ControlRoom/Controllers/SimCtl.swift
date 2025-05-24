@@ -41,20 +41,13 @@ enum SimCtl: CommandLineCommandExecuter {
         executePropertyList(.listApps(deviceId: simulator, flags: [.json]))
     }
 
-    static func boot(_ simulator: Simulator) {
-        /// No need to check if Simulator app is already running since no second SImulator app will be spawned
-        SnapshotCtl.startSimulatorApp {
-            /// Wait for a little while Simulator app starts running, then proceed to boot simulator
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                execute(.boot(simulator: simulator))
-            }
-        }
+    static func boot(_ simulator: Simulator) async {
+        await SnapshotCtl.startSimulatorApp()
+        _ = await execute(.boot(simulator: simulator))
     }
 
-    static func shutdown(_ simulator: String, completion: ((Result<Data, CommandLineError>) -> Void)? = nil) {
-        execute(.shutdown(.devices([simulator]))) { result in
-            completion?(result)
-        }
+    static func shutdown(_ simulator: String) async {
+        _ = await execute(.shutdown(.devices([simulator])))
     }
 
     static func setContentSize(_ simulator: String, contentSize: UI.ContentSizes) {

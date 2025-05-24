@@ -75,23 +75,31 @@ struct ControlView: View {
             }
 
             if simulator.state != .booted {
-                Button("Boot", action: bootDevice)
+                Button("Boot") {
+                    Task {
+                        await bootDevice()
+                    }
+                }
             }
 
             if simulator.state != .shutdown {
-                Button("Shutdown", action: shutdownDevice)
+                Button("Shutdown") {
+                    Task {
+                        await shutdownDevice()
+                    }
+                }
             }
         }
     }
 
     /// Launches the current device.
-    func bootDevice() {
-        SimCtl.boot(simulator)
+    func bootDevice() async {
+        await SimCtl.boot(simulator)
     }
 
     /// Terminates the current device.
-    func shutdownDevice() {
-        SimCtl.shutdown(simulator.udid)
+    func shutdownDevice() async {
+        await SimCtl.shutdown(simulator.udid)
     }
 }
 

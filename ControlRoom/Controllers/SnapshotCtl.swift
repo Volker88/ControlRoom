@@ -61,12 +61,12 @@ enum SnapshotCtl: CommandLineCommandExecuter {
         return snapshots
     }
 
-    static func createSnapshot(deviceId: String, snapshotName: String) {
-        SimCtl.shutdown(deviceId) { _ in
-            execute(.createSnapshotTree(deviceId: deviceId, snapshotName: snapshotName)) { _ in
-                try? FileManager.default.copyItem(atPath: devicesPath + "/" + deviceId, toPath: snapshotsPath + "/" + deviceId + "/" + snapshotName + "/" + deviceId)
-            }
-        }
+    static func createSnapshot(deviceId: String, snapshotName: String) async {
+        await SimCtl.shutdown(deviceId)
+        _ = await execute(.createSnapshotTree(deviceId: deviceId, snapshotName: snapshotName))
+
+        try? FileManager.default.copyItem(atPath: devicesPath + "/" + deviceId, toPath: snapshotsPath + "/" + deviceId + "/" + snapshotName + "/" + deviceId)
+
     }
 
     static func renameSnapshot(deviceId: String, snapshotName: String, newSnapshotName: String) {
@@ -84,19 +84,23 @@ enum SnapshotCtl: CommandLineCommandExecuter {
         try? FileManager.default.removeItem(atPath: snapshotPath)
     }
 
-    static func restoreSnapshot(deviceId: String, snapshotName: String) {
+    static func restoreSnapshot(deviceId: String, snapshotName: String) async {
         let snapshotPath: String = snapshotsPath + "/" + deviceId
 
-        SimCtl.shutdown(deviceId) { _ in
-            try? FileManager.default.removeItem(atPath: devicesPath + "/" + deviceId)
-            try? FileManager.default.copyItem(atPath: snapshotPath + "/" + snapshotName + "/" + deviceId, toPath: devicesPath + "/" + deviceId)
-        }
+        await SimCtl.shutdown(deviceId)
+        try? FileManager.default.removeItem(atPath: devicesPath + "/" + deviceId)
+        try? FileManager.default.copyItem(atPath: snapshotPath + "/" + snapshotName + "/" + deviceId, toPath: devicesPath + "/" + deviceId)
     }
 
+    @available(*, deprecated, message: "Use the async version of execute instead")
     static func startSimulatorApp(completion: @escaping (() -> Void)) {
         execute(.open(app: "Simulator.app")) { _ in
             return completion()
         }
+    }
+
+    static func startSimulatorApp() async {
+        _ = await execute(.open(app: "Simulator.app"))
     }
 
     private static func getSnapshotAttributes(_ snapshotPath: String) -> URLFileAttribute {

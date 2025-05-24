@@ -131,7 +131,10 @@ struct SnapshotsView: View {
         switch action {
         case .delete: SnapshotCtl.deleteSnapshot(deviceId: simulator.udid, snapshotName: selectedSnapshotName)
         case .rename: SnapshotCtl.renameSnapshot(deviceId: simulator.udid, snapshotName: selectedSnapshotName, newSnapshotName: newName)
-        case .restore: SnapshotCtl.restoreSnapshot(deviceId: simulator.udid, snapshotName: selectedSnapshotName)
+        case .restore:
+                Task {
+                    await SnapshotCtl.restoreSnapshot(deviceId: simulator.udid, snapshotName: selectedSnapshotName)
+                }
         }
     }
 

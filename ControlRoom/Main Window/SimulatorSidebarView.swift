@@ -105,13 +105,20 @@ struct SimulatorSidebarView: View {
         switch action {
         case .rename: SimCtl.rename(simulator.udid, name: newName)
         case .clone: SimCtl.clone(simulator.udid, name: newName)
-        case .createSnapshot: SnapshotCtl.createSnapshot(deviceId: simulator.udid, snapshotName: UUID().uuidString)
+        case .createSnapshot:
+                Task {
+                   await SnapshotCtl.createSnapshot(deviceId: simulator.udid, snapshotName: UUID().uuidString)
+                }
         case .delete: SimCtl.delete([simulator.udid])
         case .power:
             if simulator.state == .booted {
-                SimCtl.shutdown(simulator.udid)
+                Task {
+                    await SimCtl.shutdown(simulator.udid)
+                }
             } else if simulator.state == .shutdown {
-                SimCtl.boot(simulator)
+                Task {
+                    await SimCtl.boot(simulator)
+                }
             }
         case .openRoot:
             simulator.open(.root)

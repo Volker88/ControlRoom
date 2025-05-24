@@ -116,21 +116,21 @@ enum SimCtl: CommandLineCommandExecuter {
         let timeOnlyFormatter = DateFormatter()
         timeOnlyFormatter.dateFormat = "hh:mm"
         let timeString = timeOnlyFormatter.string(from: time)
-        
+
         _ = await execute(.statusBar(deviceId: simulator, operation: .override([.time(timeString)])))
     }
-    
+
     static func setAppearance(_ simulator: String, appearance: UI.Appearance) async {
         _ = await execute(.ui(deviceId: simulator, option: .appearance(appearance)))
     }
-    
-    static func setLogging(_ simulator: Simulator, enableLogging: Bool) {
+
+    static func setLogging(_ simulator: Simulator, enableLogging: Bool) async {
         UserDefaults.standard.set(enableLogging, forKey: "\(simulator.udid).logging")
-        execute(.setLogging(deviceTypeId: simulator.udid, enableLogging: enableLogging))
-        execute(.shutdown(.devices([simulator.udid])))
-        execute(.boot(simulator: simulator))
+        _ = await execute(.setLogging(deviceTypeId: simulator.udid, enableLogging: enableLogging))
+        _ = await execute(.shutdown(.devices([simulator.udid])))
+        _ = await execute(.boot(simulator: simulator))
     }
-    
+
     static func getLogs(_ simulator: String) {
         let source = """
                             tell application "Terminal"
@@ -147,16 +147,16 @@ enum SimCtl: CommandLineCommandExecuter {
         }
     }
 
-    static func triggeriCloudSync(_ simulator: String) {
-        execute(.icloudSync(deviceId: simulator))
+    static func triggeriCloudSync(_ simulator: String) async {
+        _ = await execute(.icloudSync(deviceId: simulator))
     }
 
-    static func copyPasteboardToMac(_ simulator: String) {
-        execute(.pbsync(source: .deviceId(simulator), destination: .host))
+    static func copyPasteboardToMac(_ simulator: String) async {
+        _ = await execute(.pbsync(source: .deviceId(simulator), destination: .host))
     }
 
-    static func copyPasteboardToSimulator(_ simulator: String) {
-        execute(.pbsync(source: .host, destination: .deviceId(simulator)))
+    static func copyPasteboardToSimulator(_ simulator: String) async {
+        _ = await execute(.pbsync(source: .host, destination: .deviceId(simulator)))
     }
 
     static func saveScreenshot(
@@ -188,26 +188,21 @@ enum SimCtl: CommandLineCommandExecuter {
         }
     }
 
-    static func uninstall(_ simulator: String, appID: String) {
-        execute(.uninstall(deviceId: simulator, appBundleId: appID))
+    static func uninstall(_ simulator: String, appID: String) async {
+        _ = await execute(.uninstall(deviceId: simulator, appBundleId: appID))
     }
 
-    static func launch(_ simulator: String, appID: String) {
-        execute(.launch(deviceId: simulator, appBundleId: appID))
+    static func launch(_ simulator: String, appID: String) async {
+        _ = await execute(.launch(deviceId: simulator, appBundleId: appID))
     }
 
-    static func terminate(_ simulator: String, appID: String) {
-        execute(.terminate(deviceId: simulator, appBundleId: appID))
+    static func terminate(_ simulator: String, appID: String) async {
+        _ = await execute(.terminate(deviceId: simulator, appBundleId: appID))
     }
 
-    static func restart(_ simulator: String, appID: String) {
-        terminate(simulator, appID: appID)
-
-        // Wait a fraction of a section to ensure the system has terminated
-        // the app before we relaunch it.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-            launch(simulator, appID: appID)
-        }
+    static func restart(_ simulator: String, appID: String) async {
+        await terminate(simulator, appID: appID)
+        await launch(simulator, appID: appID)
     }
 
     static func sendPushNotification(_ simulator: String, appID: String, jsonPayload: String) {

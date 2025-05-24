@@ -155,17 +155,23 @@ struct AppView: View {
 
     /// Launches the currently selected app.
     func launchApp() {
-        SimCtl.launch(simulator.udid, appID: lastBundleID)
+        Task {
+            await SimCtl.launch(simulator.udid, appID: lastBundleID)
+        }
     }
 
     /// Terminates the currently selected app.
     func terminateApp() {
-        SimCtl.terminate(simulator.udid, appID: lastBundleID)
+        Task {
+            await SimCtl.terminate(simulator.udid, appID: lastBundleID)
+        }
     }
 
     /// Terminates the currently selected app, then restarts it immediately.
     func restartApp() {
-        SimCtl.restart(simulator.udid, appID: lastBundleID)
+        Task {
+            await SimCtl.restart(simulator.udid, appID: lastBundleID)
+        }
     }
 
     /// Reveals the app's container directory in Finder.
@@ -223,7 +229,9 @@ struct AppView: View {
 
     /// Removes the identified app from the device.
     func uninstallApp() {
-        SimCtl.uninstall(simulator.udid, appID: selectedApplication.bundleIdentifier)
+        Task {
+            await SimCtl.uninstall(simulator.udid, appID: selectedApplication.bundleIdentifier)
+        }
     }
 
     /// Opens the app's UserDefaults plist file in Xcode.

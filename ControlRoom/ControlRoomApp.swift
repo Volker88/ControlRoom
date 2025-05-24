@@ -100,7 +100,9 @@ struct ControlRoomApp: App {
     }
 
     func restartLastSelectedApp() {
-        SimCtl.restart(lastSimulatorUDID, appID: lastBundleID)
+        Task {
+            await SimCtl.restart(lastSimulatorUDID, appID: lastBundleID)
+        }
     }
 
     func reopenLastURL() {

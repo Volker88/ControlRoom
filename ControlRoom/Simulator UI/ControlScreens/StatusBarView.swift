@@ -152,7 +152,7 @@ struct StatusBarView: View {
         components.second = 0
 
         let appleTime = calendar.date(from: components) ?? Date.now
-        
+
         Task {
             await SimCtl.overrideStatusBarTime(simulator.udid, time: appleTime)
         }

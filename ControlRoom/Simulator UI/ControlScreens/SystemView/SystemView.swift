@@ -148,16 +148,21 @@ struct SystemView: View {
 
     /// Starts an immediate iCloud sync.
     func triggerSync() {
-        SimCtl.triggeriCloudSync(simulator.udid)
+        Task {
+            await SimCtl.triggeriCloudSync(simulator.udid)
+        }
     }
+    
     /// Update logging.
     func updateLogging() {
-        if isLoggingEnabled {
-            SimCtl.setLogging(simulator, enableLogging: false)
-            isLoggingEnabled = false
-        } else {
-            SimCtl.setLogging(simulator, enableLogging: true)
-            isLoggingEnabled = true
+        Task {
+            if isLoggingEnabled {
+                await SimCtl.setLogging(simulator, enableLogging: false)
+                isLoggingEnabled = false
+            } else {
+                await SimCtl.setLogging(simulator, enableLogging: true)
+                isLoggingEnabled = true
+            }
         }
     }
     /// Get logs.
@@ -167,12 +172,16 @@ struct SystemView: View {
 
     /// Copies the simulator's pasteboard to the Mac.
     func copyPasteboardToMac() {
-        SimCtl.copyPasteboardToMac(simulator.udid)
+        Task {
+            await SimCtl.copyPasteboardToMac(simulator.udid)
+        }
     }
 
     /// Copies the Mac's pasteboard to the simulator.
     func copyPasteboardToSim() {
-        SimCtl.copyPasteboardToSimulator(simulator.udid)
+        Task {
+            await SimCtl.copyPasteboardToSimulator(simulator.udid)
+        }
     }
 
     /// Opens a URL in the appropriate device app.

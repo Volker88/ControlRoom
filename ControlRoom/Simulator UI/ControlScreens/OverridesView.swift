@@ -70,7 +70,11 @@ struct OverridesView: View {
                         }
                     }
                     HStack {
-                        Button("Set Language/Locale", action: updateLanguage)
+                        Button("Set Language/Locale") {
+                            Task {
+                                await updateLanguage()
+                            }
+                        }
                         Text("(Requires Reboot)").font(.system(size: 11)).foregroundColor(.secondary)
                     }
                 }
@@ -119,11 +123,11 @@ struct OverridesView: View {
         SimCtl.setAppearance(simulator.udid, appearance: appearance)
     }
 
-    func updateLanguage() {
+    func updateLanguage() async {
         let plistPath = simulator.dataPath + "/Library/Preferences/.GlobalPreferences.plist"
-        _ = Process.execute("/usr/bin/xcrun", arguments: ["plutil", "-replace", "AppleLanguages", "-json", "[\"\(language)\" ]", plistPath])
-        _ = Process.execute("/usr/bin/xcrun", arguments: ["plutil", "-replace", "AppleLocale", "-string", locale, plistPath])
-        SimCtl.reboot(simulator)
+        _ = try? await Process.execute("/usr/bin/xcrun", arguments: ["plutil", "-replace", "AppleLanguages", "-json", "[\"\(language)\" ]", plistPath])
+        _ = try? await Process.execute("/usr/bin/xcrun", arguments: ["plutil", "-replace", "AppleLocale", "-string", locale, plistPath])
+        await SimCtl.reboot(simulator)
     }
 
     private func locales(for language: String) -> [String] {
@@ -138,7 +142,9 @@ struct OverridesView: View {
 
     /// Update Content Size.
     func updateContentSize() {
-        SimCtl.setContentSize(simulator.udid, contentSize: contentSize)
+        Task {
+            await SimCtl.setContentSize(simulator.udid, contentSize: contentSize)
+        }
     }
 
     // Updates the simulator's accessibility setting for a particular key.

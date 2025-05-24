@@ -186,7 +186,11 @@ struct SystemView: View {
 
     /// Erases the current device.
     func eraseDevice() {
-        SimCtl.erase(simulator.udid)
+        Task {
+            await SimCtl.shutdown(simulator.udid)
+            await SimCtl.erase(simulator.udid)
+            await SimCtl.boot(simulator)
+        }
     }
 
     /// Resets the keychain on the current device

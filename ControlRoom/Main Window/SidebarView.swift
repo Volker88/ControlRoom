@@ -103,7 +103,9 @@ struct SidebarView: View {
     /// Deletes all simulators that are currently selected.
     func deleteSelectedSimulators() {
         guard controller.selectedSimulatorIDs.isNotEmpty else { return }
-        SimCtl.delete(controller.selectedSimulatorIDs)
+        Task {
+            await SimCtl.delete(controller.selectedSimulatorIDs)
+        }
     }
 
     /// Called whenever the user adjusts their selection of simulator.

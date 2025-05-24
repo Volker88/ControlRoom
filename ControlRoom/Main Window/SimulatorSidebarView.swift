@@ -102,26 +102,28 @@ struct SimulatorSidebarView: View {
     private func performAction(_ action: Action) {
         guard newName.isNotEmpty else { return }
 
-        switch action {
-        case .rename: SimCtl.rename(simulator.udid, name: newName)
-        case .clone: SimCtl.clone(simulator.udid, name: newName)
-        case .createSnapshot:
-                Task {
-                   await SnapshotCtl.createSnapshot(deviceId: simulator.udid, snapshotName: UUID().uuidString)
-                }
-        case .delete: SimCtl.delete([simulator.udid])
-        case .power:
-            if simulator.state == .booted {
-                Task {
+        Task {
+            switch action {
+            case .rename:
+                await SimCtl.rename(simulator.udid, name: newName)
+            case .clone:
+                await SimCtl.clone(simulator.udid, name: newName)
+            case .createSnapshot:
+                await SnapshotCtl.createSnapshot(
+                    deviceId: simulator.udid,
+                    snapshotName: UUID().uuidString
+                )
+            case .delete:
+                await SimCtl.delete([simulator.udid])
+            case .power:
+                if simulator.state == .booted {
                     await SimCtl.shutdown(simulator.udid)
-                }
-            } else if simulator.state == .shutdown {
-                Task {
+                } else if simulator.state == .shutdown {
                     await SimCtl.boot(simulator)
                 }
+            case .openRoot:
+                simulator.open(.root)
             }
-        case .openRoot:
-            simulator.open(.root)
         }
     }
 }

@@ -50,30 +50,29 @@ enum SimCtl: CommandLineCommandExecuter {
         _ = await execute(.shutdown(.devices([simulator])))
     }
 
-    static func setContentSize(_ simulator: String, contentSize: UI.ContentSizes) {
-        execute(.ui(deviceId: simulator, option: .contentSize(contentSize)))
+    static func setContentSize(_ simulator: String, contentSize: UI.ContentSizes) async {
+        _ = await execute(.ui(deviceId: simulator, option: .contentSize(contentSize)))
     }
 
-    static func reboot(_ simulator: Simulator) {
-        execute(.shutdown(.devices([simulator.udid]))) { _ in
-            execute(.boot(simulator: simulator))
-        }
+    static func reboot(_ simulator: Simulator) async {
+        _ = await execute(.shutdown(.devices([simulator.udid])))
+        _ = await execute(.boot(simulator: simulator))
     }
 
-    static func erase(_ simulator: String) {
-        execute(.erase(.devices([simulator])))
+    static func erase(_ simulator: String) async {
+        _ = await execute(.erase(.devices([simulator])))
     }
 
-    static func clone(_ simulator: String, name: String) {
-        execute(.clone(deviceId: simulator, name: name))
+    static func clone(_ simulator: String, name: String) async {
+        _ = await execute(.clone(deviceId: simulator, name: name))
     }
 
-    static func create(name: String, deviceType: DeviceType, runtime: Runtime) {
-        execute(.create(name: name, deviceTypeId: deviceType.identifier, runtimeId: runtime.identifier)) { _ in }
+    static func create(name: String, deviceType: DeviceType, runtime: Runtime) async {
+        _ = await execute(.create(name: name, deviceTypeId: deviceType.identifier, runtimeId: runtime.identifier))
     }
 
-    static func rename(_ simulator: String, name: String) {
-        execute(.rename(deviceId: simulator, name: name))
+    static func rename(_ simulator: String, name: String) async {
+        _ = await execute(.rename(deviceId: simulator, name: name))
     }
 
     static func overrideStatusBarBattery(_ simulator: String, level: Int, state: StatusBar.BatteryState) {
@@ -177,8 +176,8 @@ enum SimCtl: CommandLineCommandExecuter {
         executeAsync(.io(deviceId: simulator, operation: .recordVideo(codec: type, display: display, mask: mask, force: true, url: file)))
     }
 
-    static func delete(_ simulators: Set<String>) {
-        execute(.delete(.devices(Array(simulators))))
+    static func delete(_ simulators: Set<String>) async {
+        _ = await execute(.delete(.devices(Array(simulators))))
 
         if let simulator = simulators.first {
             SnapshotCtl.deleteAllSnapshots(deviceId: simulator)

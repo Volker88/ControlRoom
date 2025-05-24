@@ -72,6 +72,8 @@ struct CreateSimulatorActionSheet: View {
     }
 
     private func confirm() {
-        SimCtl.create(name: name, deviceType: deviceType, runtime: runtime)
+        Task {
+            await SimCtl.create(name: name, deviceType: deviceType, runtime: runtime)
+        }
     }
 }

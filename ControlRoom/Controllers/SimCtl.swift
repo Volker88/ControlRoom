@@ -164,10 +164,10 @@ enum SimCtl: CommandLineCommandExecuter {
         to file: String,
         type: IO.ImageFormat? = nil,
         display: IO.Display? = nil,
-        with mask: IO.Mask? = nil,
-        completion: @escaping (Result<Data, CommandLineError>) -> Void
-    ) {
-        execute(.io(deviceId: simulator, operation: .screenshot(type: type, display: display, mask: mask, url: file)), completion: completion)
+        with mask: IO.Mask? = nil
+    ) async -> Result<Data, CommandLineError> {
+        let result = await execute(.io(deviceId: simulator, operation: .screenshot(type: type, display: display, mask: mask, url: file)))
+        return result
     }
 
     static func startVideo(

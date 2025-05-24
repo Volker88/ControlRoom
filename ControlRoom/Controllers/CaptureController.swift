@@ -38,14 +38,15 @@ class CaptureController: ObservableObject {
     @MainActor
     /// Takes a screenshot of the device's current screen and saves it to the desktop.
     func takeScreenshot(of simulator: Simulator, format: SimCtl.IO.ImageFormat? = nil) {
-        // If the user asked for a specific format then use it, otherwise
-        // use whatever is our default.
-        let resolvedFormat = format ?? settings.imageFormat
+        Task {
+            // If the user asked for a specific format then use it, otherwise
+            // use whatever is our default.
+            let resolvedFormat = format ?? settings.imageFormat
 
-        // The filename where we intend to save this image
-        let filename = makeScreenshotFilename(format: resolvedFormat)
+            // The filename where we intend to save this image
+            let filename = makeScreenshotFilename(format: resolvedFormat)
 
-        SimCtl.saveScreenshot(simulator.id, to: filename.path(), type: resolvedFormat, display: settings.display, with: settings.mask) { result in
+            _ = await SimCtl.saveScreenshot(simulator.id, to: filename.path(), type: resolvedFormat, display: settings.display, with: settings.mask)
 
             if UserDefaults.standard.bool(forKey: "renderChrome") {
                 if let image = NSImage(contentsOf: filename) {

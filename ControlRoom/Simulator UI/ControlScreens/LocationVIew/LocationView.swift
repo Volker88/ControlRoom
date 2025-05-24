@@ -181,7 +181,9 @@ struct LocationView: View {
         let coordinate = jitteredLocation ?? currentLocation.center
         pinnedLocation = coordinate
 
-        SimCtl.execute(.location(deviceId: simulator.udid, latitude: coordinate.latitude, longitude: coordinate.longitude))
+        Task {
+            await SimCtl.execute(.location(deviceId: simulator.udid, latitude: coordinate.latitude, longitude: coordinate.longitude))
+        }
     }
 
     /// Takes the entered query and performs a local search. If the query is a pasted-in coordinate,

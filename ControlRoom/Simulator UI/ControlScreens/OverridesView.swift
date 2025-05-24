@@ -152,7 +152,9 @@ struct OverridesView: View {
     // Updates the simulator's accessibility setting for a particular key.
     // Example call: xcrun simctl spawn booted defaults write com.apple.Accessibility EnhancedTextLegibilityEnabled -bool FALSE
     func updateAccessibility(key: String, value: Bool) {
-        _ = Process.execute("/usr/bin/xcrun", arguments: ["simctl", "spawn", simulator.id, "defaults", "write", "com.apple.Accessibility", key, "-bool", String(value)])
+        Task {
+            _ = try? await Process.execute("/usr/bin/xcrun", arguments: ["simctl", "spawn", simulator.id, "defaults", "write", "com.apple.Accessibility", key, "-bool", String(value)])
+        }
     }
 
     func setEnhanceTextLegibility() {
